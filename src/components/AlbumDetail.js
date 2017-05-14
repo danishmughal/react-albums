@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Text, View, Image, Linking } from 'react-native';
+import axios from 'axios';
 
 import Card from './Card';
 import CardSection from './CardSection';
@@ -7,48 +8,57 @@ import Button from './Button';
 
 // Will be solely a presentational component
 // Can be a functional component
-const AlbumDetail = ({ album }) => {
-  // Destructuring album from props
-  const { name, artists, images, external_urls } = album;
+class AlbumDetail extends Component {
 
-  const { 
-    headerContentStyle,
-    headerTextStyle,
-    thumbnailStyle, 
-    thumbnailContainerStyle,
-    imageStyle
-  } = styles;
+  playAlbum(albumId) {
+    console.log(albumId);
+    axios.get('https://api.spotify.com/v1/albums/' + albumId)
+      .then(response => console.log(response.data.tracks.items[0].preview_url));
+  }
 
-  return (
-    <Card>
-      <CardSection>
-        <View style={thumbnailContainerStyle}>
+  render() {
+    // Destructuring album from props
+    const { name, artists, images, id } = this.props.album;
+
+    const { 
+      headerContentStyle,
+      headerTextStyle,
+      thumbnailStyle, 
+      thumbnailContainerStyle,
+      imageStyle
+    } = styles;
+
+    return (
+      <Card>
+        <CardSection>
+          <View style={thumbnailContainerStyle}>
+            <Image 
+              source={{ uri: images[0].url }} 
+              style={thumbnailStyle} 
+            />
+          </View>
+
+          <View style={headerContentStyle}>
+            <Text style={headerTextStyle}>{name}</Text>
+            <Text>{artists[0].name}</Text>
+          </View>
+        </CardSection>
+
+        <CardSection>
           <Image 
-            source={{ uri: images[0].url }} 
-            style={thumbnailStyle} 
+            source={{ uri: images[0].url }}
+            style={imageStyle}
           />
-        </View>
+        </CardSection>
 
-        <View style={headerContentStyle}>
-          <Text style={headerTextStyle}>{name}</Text>
-          <Text>{artists[0].name}</Text>
-        </View>
-      </CardSection>
-
-      <CardSection>
-        <Image 
-          source={{ uri: images[0].url }}
-          style={imageStyle}
-        />
-      </CardSection>
-
-      <CardSection>
-        <Button onPress={() => Linking.openURL(external_urls.spotify)}>
-          Buy Now
-        </Button>
-      </CardSection>
-    </Card>
-  );
+        <CardSection>
+          <Button onPress={() => this.playAlbum(id)}>
+            Play
+          </Button>
+        </CardSection>
+      </Card>
+    );
+  }
 };
 
 const styles = {
