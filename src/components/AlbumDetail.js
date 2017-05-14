@@ -9,7 +9,7 @@ import Button from './Button';
 // Can be a functional component
 const AlbumDetail = ({ album }) => {
   // Destructuring album from props
-  const { title, artist, thumbnail_image, image, url } = album;
+  const { name, artists, images, external_urls } = album;
 
   const { 
     headerContentStyle,
@@ -24,26 +24,26 @@ const AlbumDetail = ({ album }) => {
       <CardSection>
         <View style={thumbnailContainerStyle}>
           <Image 
-            source={{ uri: thumbnail_image }} 
+            source={{ uri: images[0].url }} 
             style={thumbnailStyle} 
           />
         </View>
 
         <View style={headerContentStyle}>
-          <Text style={headerTextStyle}>{title}</Text>
-          <Text>{artist}</Text>
+          <Text style={headerTextStyle}>{name}</Text>
+          <Text>{artists[0].name}</Text>
         </View>
       </CardSection>
 
       <CardSection>
         <Image 
-          source={{ uri: image }}
+          source={{ uri: images[0].url }}
           style={imageStyle}
         />
       </CardSection>
 
       <CardSection>
-        <Button onPress={() => Linking.openURL(url)}>
+        <Button onPress={() => Linking.openURL(external_urls.spotify)}>
           Buy Now
         </Button>
       </CardSection>
