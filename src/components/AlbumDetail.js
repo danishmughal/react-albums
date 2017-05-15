@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, Image, Linking } from 'react-native';
+import { Text, View, Image } from 'react-native';
+
 import axios from 'axios';
+import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
+
 
 import Card from './Card';
 import CardSection from './CardSection';
@@ -9,11 +12,18 @@ import Button from './Button';
 // Will be solely a presentational component
 // Can be a functional component
 class AlbumDetail extends Component {
-
+  state = { currentSong: '' }
   playAlbum(albumId) {
     console.log(albumId);
-    axios.get('https://api.spotify.com/v1/albums/' + albumId)
-      .then(response => console.log(response.data.tracks.items[0].preview_url));
+    axios.get(`https://api.spotify.com/v1/albums/${albumId}`)
+      .then((response) => { 
+        this.setState({ currentSong: response.data.tracks.items[0].preview_url });
+        const url = response.data.tracks.items[0].preview_url;
+        ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
+        // ReactNativeAudioStreaming.stop();
+      });
+
+
   }
 
   render() {
